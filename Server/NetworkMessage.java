@@ -30,7 +30,17 @@ public class NetworkMessage {
 
     public byte[] sendOut(){
         if(!failed){
-            return this.assembledMessage;
+            byte[] outgoingMessage = new byte[this.assembledMessage.length+6];
+            outgoingMessage[0] = 0x00;
+            outgoingMessage[1] = 0x01;
+            byte[] length = ByteBuffer.allocate(4).putInt(assembledMessage.length).array();
+            outgoingMessage[2] = lenght[0];
+            outgoingMessage[3] = length[1];
+            outgoingMessage[4] = length[2];
+            outgoingMessage[5] = length[3];
+            for(int i = 0; i<assembledMessage.length;i++)
+                outgoingMessage[6+i] = assembledMessage[i];
+            return outgoingMessage;
         }
         return null;
     }
