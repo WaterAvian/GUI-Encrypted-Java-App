@@ -18,8 +18,8 @@ public class Client {
     {
         try {
             this.socket = socket;
-            this.bufferedOutput = new BufferedOutputStream(new OutputStream(socket.getOutputStream())); //new OutputStreamWriter(X); 
-            this.bufferedInput = new BufferedInputStream((new InputStream(socket.getInputStream())));
+            this.bufferedOutput = new BufferedOutputStream(socket.getOutputStream()); //new OutputStreamWriter(X); new OutputStream()
+            this.bufferedInput = new BufferedInputStream((socket.getInputStream())); //new InputStream()
             this.myGivenID = ID;
 
         } catch (IOException e) {
@@ -30,7 +30,7 @@ public class Client {
     public void sendMessage(){
         try {
             byte[] bufferForHash = "BufferHashCoffeeCoffeeBeans[null][\\0]".getBytes(); 
-            Long serverID = 0;
+            Long serverID = (long)0;
             NetworkMessage message =  new NetworkMessage(serverID, myGivenID, bufferForHash); 
             bufferedOutput.write(message.sendOut()); 
             bufferedOutput.flush();

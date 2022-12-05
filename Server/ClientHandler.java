@@ -12,8 +12,8 @@ public class ClientHandler implements Runnable {
     public ClientHandler(Socket socket) {
         try {
             this.socket = socket;
-            this.bufferedOutput = new BufferedOutputStream(new OutputStream(socket.getOutputStream())); //new OutputStreamWriter(X); 
-            this.bufferedInput = new BufferedInputStream((new InputStream(socket.getInputStream()));
+            this.bufferedOutput = new BufferedOutputStream(socket.getOutputStream()); //new OutputStreamWriter(X); 
+            this.bufferedInput = new BufferedInputStream(socket.getInputStream());
             this.clientID = getUsername(); //updated
             clientHandlers.add(this);
             //REMOVED: sendRecievedMessage("SERVER: " + clientID + "has entered the chat!")
