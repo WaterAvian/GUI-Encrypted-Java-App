@@ -19,7 +19,7 @@ public class Client {
         try {
             this.socket = socket;
             this.bufferedOutput = new BufferedOutputStream(socket.getOutputStream()); //new OutputStreamWriter(X); new OutputStream()
-            this.bufferedInput = new BufferedInputStream((socket.getInputStream())); //new InputStream()
+            this.bufferedInput = new BufferedInputStream(socket.getInputStream()); //new InputStream()
             this.myGivenID = ID;
 
         } catch (IOException e) {
