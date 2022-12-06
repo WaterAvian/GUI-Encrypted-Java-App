@@ -10,6 +10,18 @@ public class Client {
     private BufferedInputStream bufferedInput;
     private BufferedOutputStream bufferedOutput;
 
+    import java.util.ArrayList;
+import java.util.Scanner;
+import java.net.Socket;
+import java.io.*;
+import java.nio.charset.Charset;
+
+public class Client {
+
+    private Socket socket;
+    private BufferedInputStream bufferedInput;
+    private BufferedOutputStream bufferedOutput;
+
     private Long myGivenID;
     private Long recieverID; 
 
@@ -60,8 +72,8 @@ public class Client {
 
                 while (socket.isConnected()){
                     try {
-                        byte[] input = bufferedInput.read(); //RETURNS INT -> NEEDS TO BE CONVERTED TO BYTE
-                        NetworkMessage recievedMessage = new NetworkMessage(input);
+                        byte[] payload = new Unwrapper(bufferedInput).payload; //RETURNS INT -> NEEDS TO BE CONVERTED TO BYTE
+                        NetworkMessage recievedMessage = new NetworkMessage(payload);
                         recievedDecoded = recievedMessage.message;
                         String resultAfterDecode = new String(recievedDecoded, "UTF-8");
                         System.out.println(resultAfterDecode);
