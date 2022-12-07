@@ -21,13 +21,12 @@ public class ClientHandler implements Runnable {
             e.printStackTrace();
             closeEverything(socket, bufferedInput, bufferedOutput);
         }
-
     }
 
-    public long getUsername() //updated
+    public long getUsername() throws IOException //updated
     {
-        NetworkMessage clientID = new NetworkMessage(bufferedInput.read());
-        return clientID.senderID;
+        long clientID = new NetworkMessage(new Unwrapper(bufferedInput).payload).senderID;
+        return clientID;
     }
 
     @Override
@@ -36,7 +35,7 @@ public class ClientHandler implements Runnable {
         while (socket.isConnected())
         {
             try {
-                NetworkMessage messageFromClient = new NetworkMessage(bufferedInput.read()); 
+                NetworkMessage messageFromClient = new NetworkMessage(new Unwrapper(bufferedInput).payload); 
                 sendRecievedMessage(messageFromClient);
             } catch(IOException e) {
                 closeEverything(socket, bufferedInput, bufferedOutput);
@@ -68,7 +67,7 @@ public class ClientHandler implements Runnable {
     public void removeClientHandler()
     {
         clientHandlers.remove(this);
-        sendRecievedMessage("User Disconnected.");
+        //sendRecievedMessage("User Disconnected.");
     }
 
     public void closeEverything(Socket socket, BufferedInputStream bufferedInput, BufferedOutputStream bufferedOutput)

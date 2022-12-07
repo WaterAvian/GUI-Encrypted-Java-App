@@ -10,18 +10,6 @@ public class Client {
     private BufferedInputStream bufferedInput;
     private BufferedOutputStream bufferedOutput;
 
-    import java.util.ArrayList;
-import java.util.Scanner;
-import java.net.Socket;
-import java.io.*;
-import java.nio.charset.Charset;
-
-public class Client {
-
-    private Socket socket;
-    private BufferedInputStream bufferedInput;
-    private BufferedOutputStream bufferedOutput;
-
     private Long myGivenID;
     private Long recieverID; 
 
