@@ -3,12 +3,14 @@ import java.util.Scanner;
 import java.net.Socket;
 import java.io.*;
 import java.nio.charset.Charset;
+import javax.crypto.SecretKey;
 
 public class Client {
 
     private Socket socket;
     private BufferedInputStream bufferedInput;
     private BufferedOutputStream bufferedOutput;
+    private KeyMap keyMap;
 
     private Long myGivenID;
     private Long recieverID; 
@@ -21,7 +23,17 @@ public class Client {
             this.bufferedOutput = new BufferedOutputStream(socket.getOutputStream()); //new OutputStreamWriter(X); new OutputStream()
             this.bufferedInput = new BufferedInputStream(socket.getInputStream()); //new InputStream()
             this.myGivenID = ID;
-
+        
+        
+            //added key storage in hashmap
+            //currently just assumes another peer, uses a key generator for now to do it the same every time
+            //later, each client could have a RSA key and send a public key to the server,
+            //then server could create random symmetric keys  when requested by both clients so keys are random, private, and not saved aside by clients
+            keyMap = new KeyMap();
+            SecretKey hardcodePeerKey = Encrypt.getKeyFromPassword("Roger", "doger");
+            if(myGivenID == 1){keyMap.put(hardcodePeerKey, (long)2);}
+            if(myGivenID==2){keyMap.put(hardcodePeerKey, (long)1 );}
+        
         } catch (IOException e) {
             closeEverything(socket, bufferedInput, bufferedOutput);
         }

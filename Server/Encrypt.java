@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
+import java.security.KeyFactory;
     
 //adapted from notes found on baeldung.com on AES in java
 
@@ -45,5 +46,7 @@ public class Encrypt {
         String output = new String(cipher.doFinal(input));
         return output;
     }
+
+
 
 }
