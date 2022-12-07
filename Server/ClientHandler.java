@@ -7,7 +7,7 @@ public class ClientHandler implements Runnable {
     private Socket socket;
     private BufferedInputStream bufferedInput;
     private BufferedOutputStream bufferedOutput; 
-    private long clientID;
+    private Long clientID;
 
     public ClientHandler(Socket socket) {
         try {
@@ -23,9 +23,9 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public long getUsername() throws IOException //updated
+    public Long getUsername() throws IOException //updated
     {
-        long clientID = new NetworkMessage(new Unwrapper(bufferedInput).payload).senderID;
+        Long clientID = new NetworkMessage(new Unwrapper(bufferedInput).payload).senderID; //at ClientHandler.getUsername(ClientHandler.java:28)
         return clientID;
     }
 
