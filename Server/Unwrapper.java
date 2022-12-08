@@ -14,7 +14,8 @@ public class Unwrapper {
         this.firstByte = (byte)buffer.read();//ByteBuffer.allocate(4).put((byte)buffer.read()).get(0);  System.out.println("first"+firstByte); //gets byte at 0 of returned int (4 bytes)
         this.secondByte = (byte)buffer.read(); //I am going to suggest we perahaps simplify to this? no need to create a buffer here I don't think, we can read bytes directly from the stream by casting the ints of read(){which reads only one byte} back to byte
         this.length = getLength(buffer); System.out.println("lenth"+length);
-        this.payload = getPayload(buffer, length); System.out.println("payload"+payload);
+        payload = new byte[length];
+        buffer.readNBytes(payload, 0, length);
     }
 
     private int getLength(BufferedInputStream buffer) throws IOException

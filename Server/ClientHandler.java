@@ -19,14 +19,26 @@ public class ClientHandler implements Runnable {
             //REMOVED: sendRecievedMessage("SERVER: " + clientID + "has entered the chat!")
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("UHHHHHHHHHH");
             closeEverything(socket, bufferedInput, bufferedOutput);
         }
     }
 
     public Long getUsername() throws IOException //updated
     {
-        Long clientID = new NetworkMessage(new Unwrapper(bufferedInput).payload).senderID; //at ClientHandler.getUsername(ClientHandler.java:28)
-        return clientID;
+        byte[] payload = new Unwrapper(bufferedInput).payload;
+        NetworkMessage message = new NetworkMessage(payload);
+        System.out.println(message.senderID);
+        System.out.println(message.receiverID);
+        System.out.println(message.message.toString());
+        Long retClientID = message.senderID;
+        System.out.println(payload.length);
+        for(int i = 0; i<payload.length;i++){
+            System.out.printf("%x ",payload[i]);
+        }
+//        Long clientID = new NetworkMessage(new Unwrapper(bufferedInput).payload).senderID; //at ClientHandler.getUsername(ClientHandler.java:28)
+        System.out.println("\nretClientID: "+retClientID);
+        return retClientID;
     }
 
     @Override
@@ -36,10 +48,24 @@ public class ClientHandler implements Runnable {
         {
             try {
                 NetworkMessage messageFromClient = new NetworkMessage(new Unwrapper(bufferedInput).payload); 
-                sendRecievedMessage(messageFromClient);
+                if(!messageFromClient.failed){
+                    sendRecievedMessage(messageFromClient);
+                }
             } catch(IOException e) {
+
+                //THIS NO LONGER CLOSES EVERYTHING, stopped crashing
+
                 closeEverything(socket, bufferedInput, bufferedOutput);
                 e.printStackTrace();
+            }
+
+            //added this to reset buffers if we have an IO issue
+            if(this.bufferedOutput == null){
+            try{
+            this.bufferedOutput = new BufferedOutputStream(socket.getOutputStream()); //new OutputStreamWriter(X); 
+            this.bufferedInput = new BufferedInputStream(socket.getInputStream());
+            }
+            catch(Exception e){}
             }
         }
     }
@@ -82,10 +108,10 @@ public class ClientHandler implements Runnable {
             {
                 bufferedInput.close();
             }
-            if(socket != null)
-            {
-                bufferedInput.close();
-            }
+           // if(socket != null)
+            //{
+            //    bufferedInput.close();
+            //}
         } catch (IOException e) {
             e.printStackTrace();
         }

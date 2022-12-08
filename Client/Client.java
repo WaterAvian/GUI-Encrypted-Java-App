@@ -30,9 +30,9 @@ public class Client {
             //later, each client could have a RSA key and send a public key to the server,
             //then server could create random symmetric keys  when requested by both clients so keys are random, private, and not saved aside by clients
             keyMap = new KeyMap();
-            SecretKey hardcodePeerKey = Encrypt.getKeyFromPassword("Roger", "doger");
-            if(myGivenID == 1){keyMap.put(hardcodePeerKey, (long)2);}
-            if(myGivenID==2){keyMap.put(hardcodePeerKey, (long)1 );}
+            //SecretKey hardcodePeerKey = Encrypt.getKeyFromPassword("Roger", "doger");
+            //if(myGivenID == 1){keyMap.put(hardcodePeerKey, (long)2);}
+            //if(myGivenID==2){keyMap.put(hardcodePeerKey, (long)1 );}
         
         } catch (IOException e) {
             closeEverything(socket, bufferedInput, bufferedOutput);
@@ -41,7 +41,7 @@ public class Client {
 
     public void sendMessage(){
         try {
-            byte[] bufferForHash = "BufferHashCoffeeCoffeeBeans[null][\\0]".getBytes(); 
+            byte[] bufferForHash = "AAAAAASSSSSSB".getBytes(); 
             Long serverID = (long)0;
             NetworkMessage message =  new NetworkMessage(serverID, myGivenID, bufferForHash); 
             bufferedOutput.write(message.sendOut()); 

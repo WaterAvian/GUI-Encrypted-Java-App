@@ -41,6 +41,7 @@ public class NetworkMessage {
             outgoingMessage[5] = length[3];
             for(int i = 0; i<assembledMessage.length;i++)
                 outgoingMessage[6+i] = assembledMessage[i];
+            System.out.println(new String(outgoingMessage));
             return outgoingMessage;
         }
         return null;
