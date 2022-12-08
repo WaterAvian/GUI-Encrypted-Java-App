@@ -32,7 +32,7 @@ public class NetworkMessage {
     public byte[] sendOut(){
         if(!failed){
             byte[] outgoingMessage = new byte[this.assembledMessage.length+6];
-            outgoingMessage[0] = 0x00;
+            outgoingMessage[0] = 0x01;
             outgoingMessage[1] = 0x01;
             byte[] length = ByteBuffer.allocate(4).putInt(assembledMessage.length).array();
             outgoingMessage[2] = length[0];

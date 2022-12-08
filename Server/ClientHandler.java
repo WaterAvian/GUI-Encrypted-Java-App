@@ -47,11 +47,12 @@ public class ClientHandler implements Runnable {
         while (socket.isConnected())
         {
             try {
-                NetworkMessage messageFromClient = new NetworkMessage(new Unwrapper(bufferedInput).payload); 
-                if(!messageFromClient.failed){
-                    sendRecievedMessage(messageFromClient);
-                }
-            } catch(IOException e) {
+                System.out.println("unrapz");
+                Unwrapper unwrapper = new Unwrapper(bufferedInput); 
+                MessageHandler messageHandler = new MessageHandler(unwrapper, this);
+                Thread thread = new Thread(messageHandler);
+                thread.start();
+            } catch(Exception e) {
 
                 //THIS NO LONGER CLOSES SOCKET, stopped crashing
 
@@ -68,6 +69,29 @@ public class ClientHandler implements Runnable {
             catch(Exception e){}
             }
         }
+    }
+
+    public void forward(byte[] payload){
+        NetworkMessage msg = new NetworkMessage(payload);
+
+        for(ClientHandler clientHandler : clientHandlers)
+        {
+            System.out.println("checking client "+clientHandler.clientID);
+            try {
+                if (clientHandler.clientID == msg.receiverID)
+                {
+                    System.out.println("sending to "+clientHandler.clientID);
+
+                    clientHandler.bufferedOutput.write(msg.sendOut()); //send message method
+                    clientHandler.bufferedOutput.flush();
+                    return;
+                }
+            } catch (IOException e) {
+                closeEverything(socket, bufferedInput, bufferedOutput);
+                e.printStackTrace();
+            }   
+        } 
+
     }
 
     public void sendRecievedMessage(NetworkMessage messageToSend){
