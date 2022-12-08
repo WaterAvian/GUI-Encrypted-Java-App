@@ -13,7 +13,7 @@ public class Unwrapper {
     {
         this.firstByte = ByteBuffer.allocate(4).putInt(buffer.read()).get(0);  System.out.println("first"+firstByte); //gets byte at 0 of returned int (4 bytes)
         this.secondByte = ByteBuffer.allocate(4).putInt(buffer.read()).get(0);  System.out.println("second"+secondByte);
-        this.length = getLength(buffer); System.out.println("lenth"+length);
+        this.length = getLength(buffer);
         payload = new byte[length];
         buffer.readNBytes(payload, 0, length);
     }
@@ -27,7 +27,6 @@ public class Unwrapper {
         } 
 
         int test = ByteBuffer.wrap(array).getInt();
-        System.out.println(test);
         return test;
     }
 

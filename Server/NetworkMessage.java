@@ -115,15 +115,15 @@ public class NetworkMessage {
                 this.receiverID = ByteUtils.bytesToLong(Arrays.copyOfRange(assembledMessage, 0, 8));
                 this.senderID = ByteUtils.bytesToLong(Arrays.copyOfRange(assembledMessage, 8, 16));
                 this.message = Arrays.copyOfRange(assembledMessage, 16, assembledMessage.length-32);
-                System.out.println("disassembly successful");
+                //System.out.println("disassembly successful");
             }
             else{
-                System.out.println("Failed hash!");
+                //System.out.println("Failed hash!");
                 this.failed = true;
             }
         }
         catch(Exception e){
-            System.out.println("failed disassembly");
+            //System.out.println("failed disassembly");
             failed = true;
         }
     }

@@ -20,7 +20,7 @@ public class Unwrapper {
         this.secondByte = (byte)buffer.read(); //I am going to suggest we perahaps simplify to this? no need to create a buffer here I don't think, we can read bytes directly from the stream by casting the ints of read(){which reads only one byte} back to byte
         
 
-        this.length = getLength(buffer); System.out.println("lenth"+length);
+        this.length = getLength(buffer); //System.out.println("lenth"+length);
 
         //doing this seemed to get the payload correctly, I was getting an array of 0/nulls before
         payload = new byte[length];
@@ -36,7 +36,7 @@ public class Unwrapper {
         } 
 
         int test = ByteBuffer.wrap(array).getInt();
-        System.out.println(test);
+        //System.out.println(test);
         return test;
     }
 //depreciated this method for getPayload by using readNBytes
