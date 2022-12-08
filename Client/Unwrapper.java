@@ -14,7 +14,8 @@ public class Unwrapper {
         this.firstByte = ByteBuffer.allocate(4).putInt(buffer.read()).get(0);  System.out.println("first"+firstByte); //gets byte at 0 of returned int (4 bytes)
         this.secondByte = ByteBuffer.allocate(4).putInt(buffer.read()).get(0);  System.out.println("second"+secondByte);
         this.length = getLength(buffer); System.out.println("lenth"+length);
-        this.payload = getPayload(buffer, length); System.out.println("payload"+payload);
+        payload = new byte[length];
+        buffer.readNBytes(payload, 0, length);
     }
 
     private int getLength(BufferedInputStream buffer) throws IOException

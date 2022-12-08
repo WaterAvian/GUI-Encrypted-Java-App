@@ -1,8 +1,9 @@
 import java.util.*;
 import javax.crypto.SecretKey;
 
-/*string , int HashMap
- * 
+/*keyMap class is a hash map for storing keys encoded against the peerID
+ * intent is to build out multiple message chain support where keys will need to be organized
+ * and easily retrievable with info from the NetworkMessage
  */
 
 public class KeyMap {
@@ -22,7 +23,7 @@ public class KeyMap {
     }
 
     public void put(SecretKey val, Long key){
-        Pair pair = new Pair(key, val0);        
+        Pair pair = new Pair(key, val);        
         this.array[getHash(key)].add(pair);
     }
     

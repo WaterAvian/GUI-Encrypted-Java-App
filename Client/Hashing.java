@@ -1,4 +1,5 @@
 import java.security.*;
+//takes care of message integrity verification
 
 public class Hashing {
 
@@ -16,7 +17,7 @@ public class Hashing {
             return hash;
         }
 /*depreciated appendHash function, moved this into message assembly in network message */
-    public static byte[] appendHash(byte[] message){
+ /*     public static byte[] appendHash(byte[] message){
         byte[] hash = hashMessage(message);
         byte[] temp = new byte[message.length+hash.length];
         int index = 0;
@@ -31,7 +32,7 @@ public class Hashing {
         }
         return temp;
     }
-
+*/
     public static boolean checkHash(byte[] message, byte[] hash){
         
         byte[] hashCheck = hashMessage(message);

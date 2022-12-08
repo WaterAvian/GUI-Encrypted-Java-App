@@ -53,7 +53,7 @@ public class ClientHandler implements Runnable {
                 }
             } catch(IOException e) {
 
-                //THIS NO LONGER CLOSES EVERYTHING, stopped crashing
+                //THIS NO LONGER CLOSES SOCKET, stopped crashing
 
                 closeEverything(socket, bufferedInput, bufferedOutput);
                 e.printStackTrace();
@@ -75,9 +75,11 @@ public class ClientHandler implements Runnable {
 
         for(ClientHandler clientHandler : clientHandlers)
         {
+            System.out.println("checking client "+clientHandler.clientID);
             try {
                 if (clientHandler.clientID == messageToSend.receiverID)
                 {
+                    System.out.println("sending to "+clientHandler.clientID);
 
                     clientHandler.bufferedOutput.write(messageToSend.sendOut()); //send message method
                     clientHandler.bufferedOutput.flush();

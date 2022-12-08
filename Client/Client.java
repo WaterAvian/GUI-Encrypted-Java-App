@@ -11,7 +11,8 @@ public class Client {
     private BufferedInputStream bufferedInput;
     private BufferedOutputStream bufferedOutput;
     private KeyMap keyMap;
-
+    private byte[] someBytes = {(byte)0,(byte)1,(byte)2,(byte)3,(byte)4,(byte)5,(byte)6,(byte)7,(byte)8,(byte)9,(byte)0,(byte)1,(byte)2,(byte)3,(byte)4,(byte)5};
+    private SecretKey hardcodePeerKey;
     private Long myGivenID;
     private Long recieverID; 
 
@@ -30,18 +31,18 @@ public class Client {
             //later, each client could have a RSA key and send a public key to the server,
             //then server could create random symmetric keys  when requested by both clients so keys are random, private, and not saved aside by clients
             keyMap = new KeyMap();
-            //SecretKey hardcodePeerKey = Encrypt.getKeyFromPassword("Roger", "doger");
-            //if(myGivenID == 1){keyMap.put(hardcodePeerKey, (long)2);}
-            //if(myGivenID==2){keyMap.put(hardcodePeerKey, (long)1 );}
+            hardcodePeerKey = Encrypt.getKeyFromPassword("Roger", "doger");
+            if(myGivenID == 1){keyMap.put(hardcodePeerKey, (long)2);}
+            if(myGivenID==2){keyMap.put(hardcodePeerKey, (long)1 );}
         
-        } catch (IOException e) {
+        } catch (Exception e) {
             closeEverything(socket, bufferedInput, bufferedOutput);
         }
     }
 
     public void sendMessage(){
         try {
-            byte[] bufferForHash = "AAAAAASSSSSSB".getBytes(); 
+            byte[] bufferForHash = Encrypt.encrypt("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",hardcodePeerKey,Encrypt.generateIv(someBytes));
             Long serverID = (long)0;
             NetworkMessage message =  new NetworkMessage(serverID, myGivenID, bufferForHash); 
             bufferedOutput.write(message.sendOut()); 
@@ -54,11 +55,12 @@ public class Client {
             {
                 String messageToSend = scan.nextLine();
                 byte[] messageToBytes = messageToSend.getBytes(Charset.forName("UTF-8"));
-                NetworkMessage newMsg =  new NetworkMessage(recieverID, myGivenID, messageToBytes);
+                byte[] cipherBytes = Encrypt.encrypt(messageToSend, keyMap.get(recieverID),Encrypt.generateIv(someBytes));
+                NetworkMessage newMsg =  new NetworkMessage(recieverID, myGivenID, cipherBytes);
                 bufferedOutput.write(newMsg.sendOut());
                 bufferedOutput.flush();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             closeEverything(socket, bufferedInput, bufferedOutput);
         }
     }
@@ -67,18 +69,18 @@ public class Client {
         new Thread(new Runnable(){
             @Override
             public void run() {
-                byte[] recievedDecoded; //recievedMessage
+                String recievedDecoded; //recievedMessage
                 
 
                 while (socket.isConnected()){
                     try {
                         byte[] payload = new Unwrapper(bufferedInput).payload; //RETURNS INT -> NEEDS TO BE CONVERTED TO BYTE
                         NetworkMessage recievedMessage = new NetworkMessage(payload);
-                        recievedDecoded = recievedMessage.message;
-                        String resultAfterDecode = new String(recievedDecoded, "UTF-8");
-                        System.out.println(resultAfterDecode);
+                        recievedDecoded = Encrypt.decrypt(recievedMessage.message, keyMap.get(recievedMessage.senderID),Encrypt.generateIv(someBytes));               
+                        
+                        System.out.println(recievedDecoded);
 
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         closeEverything(socket, bufferedInput, bufferedOutput);
                     }
                 }
