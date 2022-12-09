@@ -3,6 +3,13 @@ import java.util.Scanner;
 import java.net.Socket;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
 public class Client {
@@ -13,8 +20,7 @@ public class Client {
     private KeyMap keyMap;
     private byte[] someBytes = {(byte)0,(byte)1,(byte)2,(byte)3,(byte)4,(byte)5,(byte)6,(byte)7,(byte)8,(byte)9,(byte)0,(byte)1,(byte)2,(byte)3,(byte)4,(byte)5};
     private SecretKey hardcodePeerKey;
-    private Long myGivenID;
-    private Long recieverID; 
+    private Long myGivenID; 
 
 
     public Client(Socket socket, long ID)
@@ -40,7 +46,8 @@ public class Client {
         }
     }
 
-    public void sendMessage(){
+    public void session(){
+        Long recieverID;
         try {
             byte[] bufferForHash = Encrypt.encrypt("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",hardcodePeerKey,Encrypt.generateIv(someBytes));
             Long serverID = (long)0;
@@ -54,15 +61,24 @@ public class Client {
             while (socket.isConnected())
             {
                 String messageToSend = scan.nextLine();
-                byte[] messageToBytes = messageToSend.getBytes(Charset.forName("UTF-8"));
-                byte[] cipherBytes = Encrypt.encrypt(messageToSend, keyMap.get(recieverID),Encrypt.generateIv(someBytes));
-                NetworkMessage newMsg =  new NetworkMessage(recieverID, myGivenID, cipherBytes);
-                bufferedOutput.write(newMsg.sendOut());
-                bufferedOutput.flush();
+                send(recieverID, messageToSend);
             }
         } catch (Exception e) {
             closeEverything(socket, bufferedInput, bufferedOutput);
         }
+    }
+
+    public void send(Long toID, String message){       
+            byte[] cipherBytes;
+            try {
+            cipherBytes = Encrypt.encrypt(message, keyMap.get(toID),Encrypt.generateIv(someBytes));
+            NetworkMessage newMsg =  new NetworkMessage(toID, myGivenID, cipherBytes);
+            bufferedOutput.write(newMsg.sendOut());
+            bufferedOutput.flush();
+            } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            } 
     }
 
     public void listenForMessage() {
@@ -124,7 +140,7 @@ public class Client {
             Client client = new Client(socket, clientID);
         
             client.listenForMessage();
-            client.sendMessage();
+            client.session();
         } catch(IOException e){
             e.printStackTrace();
         }
